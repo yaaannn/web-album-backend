@@ -38,6 +38,6 @@ class User(BaseModel):
         )
 
     class Meta:
-        db_table = "user"
+        db_table = "a_user"
         verbose_name = "用户表"
         verbose_name_plural = verbose_name

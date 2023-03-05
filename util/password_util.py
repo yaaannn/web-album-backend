@@ -3,12 +3,6 @@ import hashlib
 from django.conf import settings
 
 
-def mask_hash(hash, show=6, char="*"):
-    masked = hash[:show]
-    masked += char * len(hash[show:])
-    return masked
-
-
 class PasswordUtil:
     """
     使用 PBKDF2 算法的安全密码散列
@@ -63,25 +57,3 @@ class PasswordUtil:
         decoded = self.decode(encoded)
         encoded_2 = self.encode(password, decoded["salt"], decoded["iterations"])
         return bytes(encoded, "UTF-8") == bytes(encoded_2, "UTF-8")
-
-    def safe_summary(self, encoded):
-        """
-        返回一个安全的密码散列摘要
-        """
-        decoded = self.decode(encoded)
-        return {
-            "algorithm": decoded["algorithm"],
-            "iterations": decoded["iterations"],
-            "salt": mask_hash(decoded["salt"]),
-            "hash": mask_hash(decoded["hash"]),
-        }
-
-
-# if __name__ == "__main__":
-#     print(
-#         PasswordUtil.verify(
-#             PasswordUtil(),
-#             "heyan5201314",
-#             "pbkdf2_sha256$100000$123456$I3cOmsILBnMRUsQFTlDB3y5XMEPH8J0xeROQzdeCtao=",
-#         )
-#     )

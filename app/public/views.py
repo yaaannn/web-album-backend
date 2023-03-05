@@ -12,7 +12,7 @@ from rest_framework import views
 from rest_framework.parsers import MultiPartParser
 
 from extension.json_response_ext import JsonResponse
-from extension.jwt_auth_ext import JwtAuthentication
+from extension.auth.jwt_auth import JwtAuthentication
 from extension.permission_ext import IsAuthPermission
 from util.verification_code_util import create_code_image, create_random_code
 

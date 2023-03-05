@@ -7,11 +7,13 @@ from rest_framework import generics
 from app.user.models import User
 from app.user.serializers import *
 from extension.json_response_ext import JsonResponse
-from extension.jwt_auth_ext import JwtAuthentication
-from extension.jwt_token_ext import JwtToken
+from extension.auth.jwt_auth import JwtAuthentication
+
+# from extension.jwt_token_ext import JwtToken
 from extension.permission_ext import IsAuthPermission
 from util.password_util import PasswordUtil
 from util.verification_code_util import create_random_code
+from util.jwt_token_util import JwtTokenUtil
 
 
 class UserLoginView(generics.GenericAPIView):
@@ -46,7 +48,7 @@ class UserLoginView(generics.GenericAPIView):
         user.jwt_version += 1
         payload = {"id": user.id, "jwt_version": user.jwt_version}
         logging.debug(payload)
-        jwt_token = JwtToken().encode_user(payload)
+        jwt_token = JwtTokenUtil().encode_user(payload)
         user.save()
         res.update(data={"username": user.username, "token": jwt_token})
         return res.data
@@ -216,4 +218,25 @@ class ModifyUserInfoView(generics.GenericAPIView):
         for key, value in serializer.validated_data.items():
             setattr(user, key, value)
         user.save()
+        return res.data
+
+
+class GetUserInfoByIdView(generics.GenericAPIView):
+    def get(self, request):
+        id = request.GET.get("id")
+        user = User.objects.filter(id=id).first()
+        res = JsonResponse()
+        res.update(
+            data={
+                "user_info": {
+                    "username": user.username,
+                    "email": user.email,
+                    "mobile": user.mobile,
+                    "nickname": user.nickname,
+                    "regions": user.regions,
+                    "avatar": user.avatar,
+                    "birthday": user.birthday,
+                }
+            }
+        )
         return res.data

@@ -1,6 +1,8 @@
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
-from extension.jwt_token_ext import JwtToken
+
+# from extension.jwt_token_ext import JwtToken
+from util.jwt_token_util import JwtTokenUtil
 from app.user.models import User
 
 
@@ -14,7 +16,7 @@ class JwtAuthentication(BaseAuthentication):
 
     def __init__(self) -> None:
         super().__init__()
-        self.jwt = JwtToken()
+        self.jwt = JwtTokenUtil()
 
     def authenticate(self, request):
         """

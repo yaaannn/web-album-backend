@@ -79,3 +79,17 @@ class ModifyUserInfoSerializer(serializers.ModelSerializer):
             "gender",
             # "create_time",
         )
+
+
+class SimpleUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+            "mobile",
+            "nickname",
+            "regions",
+            "avatar",
+            "birthday",
+        )

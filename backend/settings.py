@@ -66,6 +66,10 @@ INSTALLED_APPS = [
     "app.user",
     "app.public",
     "app.album",
+    "app.photo",
+    "app.comment",
+    "app.tag",
+    "app.collect",
 ]
 
 MIDDLEWARE = [
@@ -77,7 +81,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "extension.middleware_ext.LogMiddleware",
     "extension.middleware.log.LogMiddleware",
 ]
 

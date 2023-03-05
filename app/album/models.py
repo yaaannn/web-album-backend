@@ -12,6 +12,6 @@ class Album(BaseModel):
     desc = models.CharField(max_length=255, blank=True, default="", verbose_name="描述")
 
     class Meta:
-        db_table = "album"
+        db_table = "a_album"
         verbose_name = "相册表"
         verbose_name_plural = verbose_name

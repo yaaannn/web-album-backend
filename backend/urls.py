@@ -20,9 +20,13 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
     path("api/v1/user/", include("app.user.urls")),
     path("api/v1/public/", include("app.public.urls")),
     path("api/v1/album/", include("app.album.urls")),
+    path("api/v1/comment/", include("app.comment.urls")),
+    path("api/v1/collect/", include("app.collect.urls")),
+    path("api/v1/tag/", include("app.tag.urls")),
 ]
 
 if settings.DEBUG:

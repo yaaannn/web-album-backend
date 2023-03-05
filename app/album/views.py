@@ -1,7 +1,7 @@
 from rest_framework import generics
 
 from extension.json_response_ext import JsonResponse
-from extension.jwt_auth_ext import JwtAuthentication
+from extension.auth.jwt_auth import JwtAuthentication
 from extension.permission_ext import IsAuthPermission
 
 from .models import Album

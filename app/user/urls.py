@@ -9,6 +9,7 @@ from .views import (
     ResetPasswordView,
     GetUserInfoView,
     ModifyUserInfoView,
+    GetUserInfoByIdView,
     # VerifyCodeView,
 )
 
@@ -28,5 +29,8 @@ urlpatterns = [
     path("reset_password", ResetPasswordView.as_view(), name="reset_password"),
     path("get_user_info", GetUserInfoView.as_view(), name="get_user_info"),
     path("modify_user_info", ModifyUserInfoView.as_view(), name="modify_user_info"),
+    path(
+        "get_user_info_by_id", GetUserInfoByIdView.as_view(), name="get_user_info_by_id"
+    ),
     # path("verify_code/", VerifyCodeView.as_view(), name="verify_code"),
 ]

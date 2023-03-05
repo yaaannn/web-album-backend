@@ -8,7 +8,7 @@ from django.db.models import Model
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError, DecodeError
 
 
-class JwtToken:
+class JwtTokenUtil:
     """jwt的token的操作类"""
 
     def __init__(self) -> None:
