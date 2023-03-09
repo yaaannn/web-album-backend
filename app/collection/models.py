@@ -6,7 +6,7 @@ from app.photo.models import Photo
 # Create your models here.
 
 
-class Collect(BaseModel):
+class Collection(BaseModel):
     """
     收藏
     """
@@ -15,6 +15,6 @@ class Collect(BaseModel):
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, verbose_name="图片")
 
     class Meta:
-        db_table = "a_collect"
+        db_table = "a_collection"
         verbose_name = "收藏表"
         verbose_name_plural = verbose_name

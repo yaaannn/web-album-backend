@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     "app.photo",
     "app.comment",
     "app.tag",
-    "app.collect",
+    "app.collection",
 ]
 
 MIDDLEWARE = [

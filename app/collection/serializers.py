@@ -1,9 +1,9 @@
 from extension.base.serializer import BaseModelSerializer
-from .models import Collect
+from .models import Collection
 from rest_framework import serializers
 
 
-class CollectSerializer(BaseModelSerializer, serializers.ModelSerializer):
+class CollectionSerializer(BaseModelSerializer, serializers.ModelSerializer):
     class Meta:
-        model = Collect
+        model = Collection
         fields = "__all__"
