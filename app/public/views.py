@@ -39,9 +39,9 @@ class UploadImageToLocal(views.APIView):
     上传图片到本地
     """
 
-    authentication_classes = [JwtAuthentication]
-    permission_classes = [IsAuthPermission]
-    parser_classes = [MultiPartParser]
+    # authentication_classes = [JwtAuthentication]
+    # permission_classes = [IsAuthPermission]
+    # parser_classes = [MultiPartParser]
 
     def post(self, request):
         res = JsonResponse()
@@ -51,6 +51,7 @@ class UploadImageToLocal(views.APIView):
             image_name = image.name
             image_size = image.size
             check_image = os.path.splitext(image_name)[1]
+            print(check_image)
             if check_image[1:].lower() not in settings.IMAGE_FILE_CHECK:
                 res.update(
                     msg=f"{image_name} Not the specified type, alow type({'/'.join(settings.IMAGE_FILE_CHECK)})"
@@ -85,5 +86,6 @@ class UploadImageToLocal(views.APIView):
                     for chunk in image.chunks():
                         f.write(chunk)
             image_list.append(image_name)
-        res.update(data={"url": "http://127.0.0.1:8000/media/upload/" + image_list[1]})
+        image_list_url = ["http://127.0.0.1:8000/media/upload/" + i for i in image_list]
+        res.update(data={"url": image_list_url})
         return res.data
