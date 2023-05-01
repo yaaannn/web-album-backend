@@ -25,8 +25,6 @@ urlpatterns = [
     path("api/v1/public/", include("app.public.urls")),
     path("api/v1/album/", include("app.album.urls")),
     path("api/v1/comment/", include("app.comment.urls")),
-    path("api/v1/collection/", include("app.collection.urls")),
-    path("api/v1/tag/", include("app.tag.urls")),
     path("api/v1/photo/", include("app.photo.urls")),
 ]
 

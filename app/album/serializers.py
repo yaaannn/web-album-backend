@@ -5,8 +5,8 @@ from extension.base.serializer import BaseModelSerializer
 
 
 class AlbumSerializer(BaseModelSerializer, serializers.ModelSerializer):
-    # url = serializers.HyperlinkedIdentityField(view_name="album-detail")
-    author = SimpleUserInfoSerializer()
+    # url = serializers.HyperlinkedIdentityField()
+    # author = SimpleUserInfoSerializer()
 
     class Meta:
         model = Album

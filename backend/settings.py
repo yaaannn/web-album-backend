@@ -69,7 +69,8 @@ INSTALLED_APPS = [
     "app.photo",
     "app.comment",
     "app.tag",
-    "app.collection",
+    # "app.collection",
+    "app.archive",
 ]
 
 MIDDLEWARE = [
@@ -204,8 +205,8 @@ REST_FRAMEWORK = {
     # DRF异常定制处理方法
     "EXCEPTION_HANDLER": "extension.exception_handle_ext.base_exception_handler",
     # 配置分页
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 10,
+    "DEFAULT_PAGINATION_CLASS": "extension.pagination_ext.Pagination",
+    "PAGE_SIZE": 2,
 }
 
 # JWT 配置
@@ -254,3 +255,5 @@ EMAIL_HOST_PASSWORD = "OUNLZEPFWZXFPYKS"
 EMAIL_USE_SSL = False
 
 SERVER_NAME = ""
+
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}

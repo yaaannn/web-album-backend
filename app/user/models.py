@@ -7,7 +7,6 @@ from django.conf import settings
 
 
 class User(BaseModel):
-
     GENDER_CHOICES = (("0", "男"), ("1", "女"), ("2", "秘密"))
 
     username = models.CharField(max_length=32, unique=True, verbose_name="用户名")
@@ -22,7 +21,9 @@ class User(BaseModel):
     )
     avatar = models.CharField(max_length=255, blank=True, default="", verbose_name="头像")
     birthday = models.DateField(blank=True, default="1970-01-01", verbose_name="生日")
+    cover = models.CharField(max_length=255, blank=True, default="", verbose_name="封面")
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name="性别")
+
     is_freeze = models.BooleanField(default=False, verbose_name="是否冻结")
     jwt_version = models.IntegerField(default=0, verbose_name="jwt版本")
 

@@ -8,7 +8,7 @@ from extension.json_response_ext import JsonResponse
 class Pagination(PageNumberPagination):
     """自定义分页类"""
 
-    page_size = 10
+    page_size = 2
     page_size_query_param = "page_size"
     page_query_param = "page"
     max_page_size = 100

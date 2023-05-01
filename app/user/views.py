@@ -24,7 +24,6 @@ class UserLoginView(generics.GenericAPIView):
     serializer_class = UserLoginSerializer
 
     def post(self, request):
-
         res = JsonResponse()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -76,7 +75,7 @@ class UserRegisterView(generics.GenericAPIView):
         user = User.objects.create(username=username, password=password, email=email)
         user.set_password(password)
         user.save()
-        res.update(data={"username": user.username})
+        res.update(data={"username": user.username}, msg="注册成功")
         return res.data
 
 
@@ -133,7 +132,7 @@ class SendResetPasswordEmailView(generics.GenericAPIView):
         logging.info("本次验证码为: " + f"{code}")
         send_mail("reset password", f"{code}", "admin@localhost", [email])
         # user.send_reset_password_email()
-        # res.update(data={"email": user.email})
+        res.update(msg="邮件发送成功")
         return res.data
 
 
@@ -186,6 +185,7 @@ class GetUserInfoView(generics.GenericAPIView):
         res.update(
             data={
                 "user_info": {
+                    "id": user.id,
                     "username": user.username,
                     "email": user.email,
                     "mobile": user.mobile,
@@ -229,6 +229,8 @@ class GetUserInfoByIdView(generics.GenericAPIView):
         res.update(
             data={
                 "user_info": {
+                    "id": user.id,
+                    "gender": user.gender,
                     "username": user.username,
                     "email": user.email,
                     "mobile": user.mobile,
@@ -236,6 +238,7 @@ class GetUserInfoByIdView(generics.GenericAPIView):
                     "regions": user.regions,
                     "avatar": user.avatar,
                     "birthday": user.birthday,
+                    "cover": user.cover,
                 }
             }
         )

@@ -5,7 +5,7 @@ from app.user.serializers import SimpleUserInfoSerializer
 
 
 class PhotoSerializer(BaseModelSerializer, serializers.ModelSerializer):
-    # author = SimpleUserInfoSerializer()
+    author = SimpleUserInfoSerializer()
 
     class Meta:
         model = Photo
