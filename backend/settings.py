@@ -255,5 +255,3 @@ EMAIL_HOST_PASSWORD = "OUNLZEPFWZXFPYKS"
 EMAIL_USE_SSL = False
 
 SERVER_NAME = ""
-
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}

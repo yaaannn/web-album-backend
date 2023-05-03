@@ -40,7 +40,7 @@ class UserLoginSerializer(serializers.Serializer):
 
     username = serializers.CharField()
     password = serializers.CharField()
-    code = serializers.CharField()
+    # code = serializers.CharField()
 
 
 # 修改用户密码序列化器

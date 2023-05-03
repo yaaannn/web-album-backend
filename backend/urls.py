@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/v1/album/", include("app.album.urls")),
     path("api/v1/comment/", include("app.comment.urls")),
     path("api/v1/photo/", include("app.photo.urls")),
+    path("api/v1/archive/", include("app.archive.urls")),
 ]
 
 if settings.DEBUG:

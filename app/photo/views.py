@@ -15,6 +15,7 @@ from extension.json_response_ext import JsonResponse
 from extension.permission_ext import IsAuthPermission
 from .serializers import PhotoSerializer
 from extension.pagination_ext import Pagination
+from extension.cache.cache import RedisCacheForDecoratorV1
 
 # 导入F查询
 from django.db.models import F
@@ -84,6 +85,7 @@ class ListPublicPhotoView(generics.GenericAPIView):
 
     # pagination_class = Pagination
 
+    @RedisCacheForDecoratorV1("r")
     def get(self, request):
         res = JsonResponse()
         photos = Photo.objects.filter(is_public=True)
@@ -95,38 +97,6 @@ class ListPublicPhotoView(generics.GenericAPIView):
 
         serializer = self.get_serializer(photos, many=True)
         res.update(data=serializer.data)
-        return res.data
-
-
-# 添加照片到相册
-class AddPhotoToAlbumView(views.APIView):
-    """
-    添加照片到相册
-    """
-
-    authentication_classes = [
-        JwtAuthentication,
-    ]
-    permission_classes = [
-        IsAuthPermission,
-    ]
-
-    def get(self, request):
-        res = JsonResponse()
-        user = request.user
-        print(user)
-        pk = request.query_params.get("id")
-        album_id = request.query_params.get("album_id")
-        # 检查相册是否存在
-        if not Album.objects.filter(author=user, id=album_id).exists():
-            res.update(code=2, msg="相册不存在")
-            return res.data
-        queryset = Photo.objects.filter(author=user, id=pk)
-        if queryset.exists():
-            queryset.update(album_id=album_id)
-            res.update(data="添加成功")
-        else:
-            res.update(code=2, msg="添加失败")
         return res.data
 
 
@@ -166,6 +136,7 @@ class ListAlbumPhotoView(generics.GenericAPIView):
     permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
+    @RedisCacheForDecoratorV1("r")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -273,11 +244,13 @@ class GetPhotoInfoView(generics.GenericAPIView):
     # permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
+    # @RedisCacheForDecoratorV1("r")
     def get(self, request):
         res = JsonResponse()
-        # user = request.user
         pk = request.query_params.get("id")
         queryset = Photo.objects.filter(id=pk)
+        # 启用缓存后，这里的点击量+1会失效,因为缓存的是序列化后的数据，而不是数据库中的数据，该如何解决？
+        # 利用信号机制，实现点击量+1，在信号中实现，但是信号中没有request对象，无法获取用户信息
         # 点击量+1
         queryset.update(click=F("click") + 1)
         if queryset.exists():

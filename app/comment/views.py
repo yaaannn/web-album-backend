@@ -9,6 +9,7 @@ from util.sensitive_filter_util import DFAFilter
 
 from .models import Comment, Reply
 from .serializers import CommentSerializer, CommentReplySerializer
+from extension.cache.cache import RedisCacheForDecoratorV1
 
 
 class CommentCreateView(generics.GenericAPIView):
@@ -20,6 +21,7 @@ class CommentCreateView(generics.GenericAPIView):
     permission_classes = [IsAuthPermission]
     serializer_class = CommentSerializer
 
+    @RedisCacheForDecoratorV1("w")
     def post(self, request):
         """
         评论
@@ -47,6 +49,9 @@ class CommentListView(generics.GenericAPIView):
     # permission_classes = [IsAuthPermission]
     serializer_class = CommentSerializer
 
+    # 启用缓存后，如果数据库中的数据发生了变化，如何更新缓存？
+    # 1. 在更新数据库的时候，删除缓存
+    @RedisCacheForDecoratorV1("r")
     def get(self, request):
         """
         评论列表

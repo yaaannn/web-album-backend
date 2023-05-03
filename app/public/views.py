@@ -15,6 +15,7 @@ from extension.json_response_ext import JsonResponse
 from extension.auth.jwt_auth import JwtAuthentication
 from extension.permission_ext import IsAuthPermission
 from util.verification_code_util import create_code_image, create_random_code
+from util.slider_captcha_util import SliderCaptchaUtil
 
 # Create your views here.
 
@@ -138,4 +139,44 @@ class UploadPhotoToLocal(views.APIView):
             # )
 
         res.update(data={"url": "/media/upload/" + image_name})
+        return res.data
+
+
+# 获取滑块验证码
+class GetSliderCaptcha(views.APIView):
+    """
+    获取滑块验证码
+    """
+
+    def get(self, request):
+        res = JsonResponse()
+        # 获取滑块验证码
+        captcha = SliderCaptchaUtil()
+        slider_img, bg_img, x, y = captcha.create()
+        print(x, y)
+        # 将滑块验证码的x坐标存入缓存
+        cache = caches["default"]
+        cache.set(f"slider_captcha", x, timeout=None)
+        res.update(data={"slider_img": slider_img, "bg_img": bg_img, "y": y})
+        return res.data
+
+
+# 验证滑块验证码
+class ValidateSliderCaptcha(views.APIView):
+    """
+    验证滑块验证码
+    """
+
+    def post(self, request):
+        res = JsonResponse()
+        # 获取滑块验证码
+        x = request.data.get("x")
+        # 获取缓存中的滑块验证码x坐标
+        cache = caches["default"]
+        slider_captcha_x = cache.get("slider_captcha")
+        # 验证滑块验证码
+        if x >= slider_captcha_x - 5 and x <= slider_captcha_x + 5:
+            res.update(data={"result": True})
+        else:
+            res.update(data={"result": False})
         return res.data

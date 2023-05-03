@@ -30,10 +30,10 @@ class UserLoginView(generics.GenericAPIView):
         username = serializer.validated_data["username"]
         password = serializer.validated_data["password"]
 
-        code = serializer.validated_data["code"]
-        if not code == caches["default"].get("captcha"):
-            res.update(msg="验证码错误", code=2)
-            return res.data
+        # code = serializer.validated_data["code"]
+        # if not code == caches["default"].get("captcha"):
+        #     res.update(msg="验证码错误", code=2)
+        #     return res.data
 
         user = User.objects.filter(username=username).first()
         if not user:

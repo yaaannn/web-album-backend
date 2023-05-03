@@ -38,7 +38,7 @@ class DFAFilter:
         过滤敏感词
         """
         # 读取敏感词
-        with open("util/keywords", encoding="UTF-8") as f:
+        with open("./static/keywords", encoding="UTF-8") as f:
             for keyword in f:
                 self.add(keyword.strip())
 
