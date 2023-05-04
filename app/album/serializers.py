@@ -1,10 +1,9 @@
 from rest_framework import serializers
 from .models import Album
 from app.user.serializers import SimpleUserInfoSerializer
-from extension.base.serializer import BaseModelSerializer
 
 
-class AlbumSerializer(BaseModelSerializer, serializers.ModelSerializer):
+class AlbumSerializer(serializers.ModelSerializer):
     # url = serializers.HyperlinkedIdentityField()
     # author = SimpleUserInfoSerializer()
 

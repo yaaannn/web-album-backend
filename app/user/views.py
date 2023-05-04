@@ -7,7 +7,7 @@ from rest_framework import generics
 from app.user.models import User
 from app.user.serializers import *
 from extension.json_response_ext import JsonResponse
-from extension.auth.jwt_auth import JwtAuthentication
+from extension.auth.jwt_auth import UserJwtAuthentication
 
 # from extension.jwt_token_ext import JwtToken
 from extension.permission_ext import IsAuthPermission
@@ -85,7 +85,7 @@ class ChangePasswordView(generics.GenericAPIView):
     """
 
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
@@ -173,7 +173,7 @@ class GetUserInfoView(generics.GenericAPIView):
     """
 
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
@@ -204,7 +204,7 @@ class GetUserInfoView(generics.GenericAPIView):
 class ModifyUserInfoView(generics.GenericAPIView):
     serializer_class = ModifyUserInfoSerializer
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,

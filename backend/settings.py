@@ -35,6 +35,7 @@ SECRET_KEY = "django-insecure-z#6nawjbm$@&=rpy_m77xil=qz*k0+1#-!4sk-o#w*@v*5g$xg
 # os.uranomd(32).hex()
 AES_KEY = "c453001319efc1fa5f38c2052e07cedb"
 
+
 ALLOWED_HOSTS = []
 
 # CORS settings
@@ -55,7 +56,6 @@ CORS_ALLOW_METHODS = [
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -68,9 +68,8 @@ INSTALLED_APPS = [
     "app.album",
     "app.photo",
     "app.comment",
-    "app.tag",
-    # "app.collection",
     "app.archive",
+    "app.admin",
 ]
 
 MIDDLEWARE = [

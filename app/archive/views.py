@@ -1,9 +1,12 @@
 from rest_framework import generics
 from .models import Like
 
-from extension.auth.jwt_auth import JwtAuthentication
+from extension.auth.jwt_auth import UserJwtAuthentication
 from extension.json_response_ext import JsonResponse
 from extension.permission_ext import IsAuthPermission
+from extension.cache.cache import CacheDecorator
+
+
 from .serializers import *
 
 
@@ -13,9 +16,10 @@ class LikePhotoView(generics.GenericAPIView):
     对图片进行点赞
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
 
+    @CacheDecorator("w")
     def post(self, request):
         """
         点赞
@@ -39,9 +43,10 @@ class IsLikePhotoView(generics.GenericAPIView):
     是否点赞
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
 
+    @CacheDecorator("r")
     def get(self, request):
         """
         是否点赞
@@ -57,23 +62,30 @@ class IsLikePhotoView(generics.GenericAPIView):
         return res.data
 
 
-# 获取点赞列表
+# 获取我的点赞列表
 class LikeListView(generics.GenericAPIView):
     """
     获取点赞列表
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
+    serializer_class = LikeSerializer
 
+    @CacheDecorator("r")
     def get(self, request):
         """
         获取点赞列表
         """
         res = JsonResponse()
-        photo_id = request.GET.get("photo_id")
-        likes = Like.objects.filter(photo_id=photo_id)
-        serializer = LikeSerializer(likes, many=True)
+        User = request.user
+        likes = Like.objects.filter(user=User)
+        # 分页
+        page = self.paginate_queryset(likes)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(likes, many=True)
         res.update(data=serializer.data)
         return res.data
 
@@ -84,6 +96,7 @@ class LikeCountView(generics.GenericAPIView):
     获取点赞量
     """
 
+    @CacheDecorator("r")
     def get(self, request):
         """
         获取点赞量
@@ -101,9 +114,10 @@ class CancelLikePhotoView(generics.GenericAPIView):
     取消点赞
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
 
+    @CacheDecorator("w")
     def post(self, request):
         """
         取消点赞

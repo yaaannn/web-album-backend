@@ -1,11 +1,8 @@
 from .models import User
 from rest_framework import serializers
 
-# from extension.base_serializer_ext import BaseModelSerializer
-from extension.base.serializer import BaseModelSerializer
 
-
-class UserViewSetSerializer(BaseModelSerializer, serializers.ModelSerializer):
+class UserViewSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"

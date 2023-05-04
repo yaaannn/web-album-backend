@@ -1,10 +1,11 @@
 from .models import Photo
-from extension.base.serializer import BaseModelSerializer
+
+# from extension.base.serializer import BaseModelSerializer
 from rest_framework import serializers
 from app.user.serializers import SimpleUserInfoSerializer
 
 
-class PhotoSerializer(BaseModelSerializer, serializers.ModelSerializer):
+class PhotoSerializer(serializers.ModelSerializer):
     author = SimpleUserInfoSerializer()
 
     class Meta:
@@ -12,7 +13,7 @@ class PhotoSerializer(BaseModelSerializer, serializers.ModelSerializer):
         fields = "__all__"
 
 
-class SimplePhotoSerializer(BaseModelSerializer, serializers.ModelSerializer):
+class SimplePhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ["id", "name", "url"]

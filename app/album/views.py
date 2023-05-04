@@ -1,7 +1,8 @@
 from rest_framework import generics
 
+from extension.auth.jwt_auth import UserJwtAuthentication
+from extension.cache.cache import CacheDecorator
 from extension.json_response_ext import JsonResponse
-from extension.auth.jwt_auth import JwtAuthentication
 from extension.permission_ext import IsAuthPermission
 
 from .models import Album
@@ -11,12 +12,13 @@ from .serializers import AlbumSerializer
 class AlbumCreateView(generics.GenericAPIView):
     serializer_class = AlbumSerializer
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("w")
     def post(self, request):
         res = JsonResponse()
         user = request.user
@@ -32,12 +34,13 @@ class AlbumCreateView(generics.GenericAPIView):
 class AlbumListView(generics.GenericAPIView):
     serializer_class = AlbumSerializer
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -50,12 +53,13 @@ class AlbumListView(generics.GenericAPIView):
 class AlbumDeleteView(generics.GenericAPIView):
     serializer_class = AlbumSerializer
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("w")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -72,12 +76,13 @@ class AlbumDeleteView(generics.GenericAPIView):
 class AlbumUpdateView(generics.GenericAPIView):
     serializer_class = AlbumSerializer
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("w")
     def post(self, request):
         res = JsonResponse()
         user = request.user
@@ -93,12 +98,13 @@ class AlbumUpdateView(generics.GenericAPIView):
 class AlbumDetailView(generics.GenericAPIView):
     serializer_class = AlbumSerializer
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         user = request.user

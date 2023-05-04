@@ -10,7 +10,7 @@ from django.core.cache import caches
 from rest_framework.response import Response
 
 
-class RedisCacheForDecoratorV1:
+class CacheDecorator:
     def __init__(self, cache_type: str, cache_timeout: int = 300) -> None:
         self._cache_type = cache_type
         self._redis = redis.Redis(

@@ -1,9 +1,9 @@
 from .models import Like
-from extension.base.serializer import BaseModelSerializer
 from app.photo.serializers import SimplePhotoSerializer
+from rest_framework import serializers
 
 
-class LikeSerializer(BaseModelSerializer):
+class LikeSerializer(serializers.ModelSerializer):
     photo = SimplePhotoSerializer()
 
     class Meta:

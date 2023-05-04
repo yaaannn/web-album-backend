@@ -1,24 +1,15 @@
 import os
-from datetime import datetime
-from uuid import uuid4
 
-from django.conf import settings
-from PIL import Image
-from rest_framework import views, generics
-from rest_framework.parsers import MultiPartParser
-from rest_framework.filters import OrderingFilter
+from django.db.models import F
+from rest_framework import generics, views
 
 from app.photo.models import Photo
-from app.album.models import Album
-from extension.auth.jwt_auth import JwtAuthentication
+from extension.auth.jwt_auth import UserJwtAuthentication
+from extension.cache.cache import CacheDecorator
 from extension.json_response_ext import JsonResponse
 from extension.permission_ext import IsAuthPermission
-from .serializers import PhotoSerializer
-from extension.pagination_ext import Pagination
-from extension.cache.cache import RedisCacheForDecoratorV1
 
-# 导入F查询
-from django.db.models import F
+from app.photo.serializers import PhotoSerializer
 
 
 # 获取用户所有图片
@@ -27,10 +18,11 @@ class ListPhotoView(generics.GenericAPIView):
     获取用户所有图片
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -52,12 +44,13 @@ class DeletePhotoView(views.APIView):
     """
 
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("w")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -85,7 +78,7 @@ class ListPublicPhotoView(generics.GenericAPIView):
 
     # pagination_class = Pagination
 
-    @RedisCacheForDecoratorV1("r")
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         photos = Photo.objects.filter(is_public=True)
@@ -107,12 +100,13 @@ class DeletePhotoFromAlbumView(views.APIView):
     """
 
     authentication_classes = [
-        JwtAuthentication,
+        UserJwtAuthentication,
     ]
     permission_classes = [
         IsAuthPermission,
     ]
 
+    @CacheDecorator("w")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -132,11 +126,11 @@ class ListAlbumPhotoView(generics.GenericAPIView):
     获取相册中所有照片
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
-    @RedisCacheForDecoratorV1("r")
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -158,10 +152,11 @@ class UploadPhotoInfoView(generics.CreateAPIView):
     上传照片信息（名称，描述，相册，状态）
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
     # serializer_class = UpdatePhotoSerializer
 
+    @CacheDecorator("w")
     def post(self, request):
         res = JsonResponse()
         user = request.user
@@ -186,65 +181,17 @@ class UploadPhotoInfoView(generics.CreateAPIView):
         return res.data
 
 
-# class GetPhotoInfoView(generics.GenericAPIView):
-#     """
-#     获取照片信息
-#     """
-
-#     # authentication_classes = [JwtAuthentication]
-#     # permission_classes = [IsAuthPermission]
-#     # serializer_class = PhotoSerializer
-
-#     def get(self, request):
-#         res = JsonResponse()
-#         # user = request.user
-#         pk = request.query_params.get("id")
-#         print(pk)
-#         # queryset = Photo.objects.filter(id=pk)
-#         # # 点击量+1
-#         # # queryset.update(click=F("click") + 1)
-#         # if queryset.exists():
-#         #     serializer = self.get_serializer(queryset[0])
-#         #     res.update(data=serializer.data)
-#         # else:
-#         # res.update(code=2, msg="照片不存在")
-#         res.update(data=pk)
-#         print(pk)
-#         return res.data
-
-#     """
-#     获取某一用户的公开照片
-#     """
-
-#     # authentication_classes = [JwtAuthentication]
-#     # permission_classes = [IsAuthPermission]
-#     serializer_class = PhotoSerializer
-
-#     def get(self, request):
-#         res = JsonResponse()
-#         user_id = request.query_params.get("user_id")
-#         photos = Photo.objects.filter(author_id=user_id, is_public=True)
-#         # 分页
-#         page = self.paginate_queryset(photos)
-#         if page is not None:
-#             serializer = self.get_serializer(page, many=True)
-#             return self.get_paginated_response(serializer.data)
-#         serializer = self.get_serializer(photos, many=True)
-#         res.update(data=serializer.data)
-#         return res.data
-
-
 # 获取照片信息
 class GetPhotoInfoView(generics.GenericAPIView):
     """
     获取照片信息
     """
 
-    # authentication_classes = [JwtAuthentication]
+    # authentication_classes = [UserJwtAuthentication]
     # permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
-    # @RedisCacheForDecoratorV1("r")
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         pk = request.query_params.get("id")
@@ -267,10 +214,11 @@ class GetPublicPhotoByUidView(generics.GenericAPIView):
     获取某一用户的公开照片
     """
 
-    # authentication_classes = [JwtAuthentication]
+    # authentication_classes = [UserJwtAuthentication]
     # permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         user_id = request.query_params.get("id")
@@ -290,9 +238,10 @@ class UpdatePhotoInfoView(views.APIView):
     更新照片信息
     """
 
-    authentication_classes = [JwtAuthentication]
+    authentication_classes = [UserJwtAuthentication]
     permission_classes = [IsAuthPermission]
 
+    @CacheDecorator("w")
     def post(self, request):
         res = JsonResponse()
         user = request.user
