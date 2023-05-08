@@ -13,6 +13,7 @@ from extension.json_response_ext import JsonResponse
 from extension.auth.jwt_auth import AdminJwtAuthentication
 
 # from extension.jwt_token_ext import JwtToken
+from extension.cache.cache import CacheDecorator
 from extension.permission_ext import IsAuthPermission
 from util.password_util import PasswordUtil
 from util.verification_code_util import create_random_code
@@ -20,6 +21,8 @@ from util.jwt_token_util import JwtTokenUtil
 
 from .serializers import AdminLoginSerializer
 from .serializers import UserSerializer, PhotoSerializer, AlbumSerializer
+from app.comment.serializers import CommentSerializer
+from app.comment.models import Comment
 
 
 # 管理员登录
@@ -66,6 +69,7 @@ class GetAdminInfoView(generics.GenericAPIView):
     authentication_classes = [AdminJwtAuthentication]
     permission_classes = [IsAuthPermission]
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         user = request.user
@@ -88,6 +92,7 @@ class GetUserListView(generics.GenericAPIView):
     permission_classes = [IsAuthPermission]
     serializer_class = UserSerializer
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         users = User.objects.all()
@@ -106,6 +111,7 @@ class DeleteUserView(generics.GenericAPIView):
     authentication_classes = [AdminJwtAuthentication]
     permission_classes = [IsAuthPermission]
 
+    @CacheDecorator("w")
     def get(self, request):
         res = JsonResponse()
         pk = request.query_params.get("id")
@@ -118,12 +124,33 @@ class DeleteUserView(generics.GenericAPIView):
         return res.data
 
 
+# 冻结/解冻用户
+class FreezeUserView(generics.GenericAPIView):
+    authentication_classes = [AdminJwtAuthentication]
+    permission_classes = [IsAuthPermission]
+
+    @CacheDecorator("w")
+    def get(self, request):
+        res = JsonResponse()
+        pk = request.query_params.get("id")
+        queryset = User.objects.filter(id=pk)
+        if queryset.exists():
+            user = queryset.first()
+            user.is_freeze = not user.is_freeze
+            user.save()
+            res.update(msg="操作成功")
+            return res.data
+        res.update(msg="操作失败", code=2)
+        return res.data
+
+
 # 获取照片列表
 class GetPhotoListView(generics.GenericAPIView):
     authentication_classes = [AdminJwtAuthentication]
     permission_classes = [IsAuthPermission]
     serializer_class = PhotoSerializer
 
+    @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
         photos = Photo.objects.all()
@@ -133,5 +160,43 @@ class GetPhotoListView(generics.GenericAPIView):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = PhotoSerializer(photos, many=True)
+        res.update(data=serializer.data)
+        return res.data
+
+
+# 删除照片
+class DeletePhotoView(generics.GenericAPIView):
+    authentication_classes = [AdminJwtAuthentication]
+    permission_classes = [IsAuthPermission]
+
+    @CacheDecorator("w")
+    def get(self, request):
+        res = JsonResponse()
+        pk = request.query_params.get("id")
+        queryset = Photo.objects.filter(id=pk)
+        if queryset.exists():
+            queryset.delete()
+            res.update(msg="删除成功")
+            return res.data
+        res.update(msg="删除失败", code=2)
+        return res.data
+
+
+# 获取评论列表
+class GetCommentListView(generics.GenericAPIView):
+    authentication_classes = [AdminJwtAuthentication]
+    permission_classes = [IsAuthPermission]
+    serializer_class = CommentSerializer
+
+    @CacheDecorator("r")
+    def get(self, request):
+        res = JsonResponse()
+        comments = Comment.objects.all()
+        # 分页
+        page = self.paginate_queryset(comments)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = CommentSerializer(comments, many=True)
         res.update(data=serializer.data)
         return res.data

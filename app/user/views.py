@@ -30,17 +30,15 @@ class UserLoginView(generics.GenericAPIView):
         username = serializer.validated_data["username"]
         password = serializer.validated_data["password"]
 
-        # code = serializer.validated_data["code"]
-        # if not code == caches["default"].get("captcha"):
-        #     res.update(msg="验证码错误", code=2)
-        #     return res.data
-
         user = User.objects.filter(username=username).first()
         if not user:
             res.update(msg="用户不存在", code=2)
             return res.data
 
-        # if not user.password == password:
+        if user.is_freeze:
+            res.update(msg="用户已被冻结", code=2)
+            return res.data
+
         if not PasswordUtil.verify(PasswordUtil(), password, user.password):
             res.update(msg="密码错误", code=2)
             return res.data

@@ -6,6 +6,9 @@ from .views import (
     GetUserListView,
     DeleteUserView,
     GetPhotoListView,
+    DeletePhotoView,
+    FreezeUserView,
+    GetCommentListView,
 )
 
 urlpatterns = [
@@ -14,4 +17,7 @@ urlpatterns = [
     path("user/list", GetUserListView.as_view()),
     path("user/delete", DeleteUserView.as_view()),
     path("photo/list", GetPhotoListView.as_view()),
+    path("photo/delete", DeletePhotoView.as_view()),
+    path("user/freeze", FreezeUserView.as_view()),
+    path("comment/list", GetCommentListView.as_view()),
 ]

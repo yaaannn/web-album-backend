@@ -1,5 +1,6 @@
 import os
-
+from django.conf import settings
+from pathlib import Path
 from django.db.models import F
 from rest_framework import generics, views
 
@@ -10,6 +11,7 @@ from extension.json_response_ext import JsonResponse
 from extension.permission_ext import IsAuthPermission
 
 from app.photo.serializers import PhotoSerializer
+from PIL import Image, ImageFilter, ImageFont, ImageDraw
 
 
 # 获取用户所有图片
@@ -165,6 +167,26 @@ class UploadPhotoInfoView(generics.CreateAPIView):
         album_id = request.data.get("album_id")
         is_public = request.data.get("is_public")
         url = request.data.get("url")
+        is_watermark = request.data.get("is_watermark")
+        # 添加水印
+        if is_watermark:
+            img_path = f"{settings.BASE_DIR}{url}"
+            img = Image.open(img_path)
+            if img.mode != "RGBA":
+                img = img.convert("RGBA")
+            txt = Image.new("RGBA", img.size, (0, 0, 0, 0))
+            fnt = ImageFont.truetype(
+                f"{settings.BASE_DIR}/static/font/SmileySans-Oblique.ttf", 40
+            )
+            d = ImageDraw.Draw(txt)
+            d.text(
+                (img.size[0] - 200, img.size[1] - 100),
+                request.user.username,
+                font=fnt,
+                fill=(255, 255, 255, 255),
+            )
+            out = Image.alpha_composite(img, txt)
+            out.save(img_path)
         queryset = Photo.objects.filter(author=user, name=name)
         if queryset.exists():
             res.update(code=2, msg="照片已存在")
