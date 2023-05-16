@@ -5,6 +5,8 @@
     "python.formatting.provider": "none",
     "cSpell.words": [
         "hset",
+        "ipfs",
+        "ipfshttpclient",
         "setex",
         "websockets"
     ]
