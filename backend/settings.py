@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "app.comment",
     "app.archive",
     "app.admin",
+    "app.partition",
 ]
 
 MIDDLEWARE = [
@@ -151,9 +152,6 @@ STATICFILES_DIRS = [
 # 迁移静态文件的目录,这个是线上是需要使用的 python manage.py collectstatic
 STATIC_ROOT = BASE_DIR / "static/static"
 
-# 媒体文件位置
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -226,13 +224,6 @@ JWT_SETTINGS = {
     "AUTH_HEADER_TYPES": "Bearer",
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
 }
-
-# 图像文件大小配置
-IMAGE_FILE_SIZE = 1024 * 1024 * 64
-
-# 图像文件格式限制
-IMAGE_FORMAT = ["jpg", "jpeg", "png", "gif"]
-IMAGE_FILE_CHECK = ("png", "jpg", "jpeg", "gif", "svg")
 
 # 限制接口访问频率
 MINUTE_HZ = 30

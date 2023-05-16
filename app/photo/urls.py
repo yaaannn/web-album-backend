@@ -16,4 +16,7 @@ urlpatterns = [
     path("upload", UploadPhotoInfoView.as_view(), name="upload_photo"),
     path("info", GetPhotoInfoView.as_view(), name="get_photo_info"),
     path("public/id", GetPublicPhotoByUidView.as_view(), name="get_photo_by_id"),
+    path(
+        "public/partition", GetPhotoByPidView.as_view(), name="get_photo_by_partition"
+    ),
 ]

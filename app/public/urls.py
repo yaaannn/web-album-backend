@@ -3,6 +3,7 @@ from .views import (
     UploadPhotoToLocal,
     GetSliderCaptcha,
     ValidateSliderCaptcha,
+    UploadPhotoToIPFS,
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
         ValidateSliderCaptcha.as_view(),
         name="validate_slider_captcha",
     ),
+    path("upload/ipfs", UploadPhotoToIPFS.as_view(), name="upload_ipfs_photo"),
 ]

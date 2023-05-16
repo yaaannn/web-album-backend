@@ -1,10 +1,8 @@
-from django.test import TestCase
-import requests
+import ipfshttpclient as ipfs
 
-# Create your tests here.
+ipfs_client = ipfs.connect("/ip4/127.0.0.1/tcp/5001")
 
-baseURL = "http://127.0.0.1:8000"
+address = ipfs_client.add("app/photo/1u2cbb88646aa5482487fc0f3884989cb1.png")
 
-r = requests.get(baseURL + "/api/v1/photo/info?id=8")
-
-print(r.elapsed.microseconds)
+print(address)
+# print(ipfs_client.cat(address))

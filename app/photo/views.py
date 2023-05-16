@@ -1,6 +1,5 @@
 import os
 from django.conf import settings
-from pathlib import Path
 from django.db.models import F
 from rest_framework import generics, views
 
@@ -12,6 +11,7 @@ from extension.permission_ext import IsAuthPermission
 
 from app.photo.serializers import PhotoSerializer
 from PIL import Image, ImageFilter, ImageFont, ImageDraw
+import click
 
 
 # 获取用户所有图片
@@ -70,7 +70,7 @@ class DeletePhotoView(views.APIView):
         return res.data
 
 
-# 获取所有公开图片
+# 获取所有公开且通过审核的图片
 class ListPublicPhotoView(generics.GenericAPIView):
     """
     获取所有公开图片
@@ -83,7 +83,7 @@ class ListPublicPhotoView(generics.GenericAPIView):
     @CacheDecorator("r")
     def get(self, request):
         res = JsonResponse()
-        photos = Photo.objects.filter(is_public=True)
+        photos = Photo.objects.filter(is_public=True, status=0)
         # 分页
         page = self.paginate_queryset(photos)
         if page is not None:
@@ -165,39 +165,33 @@ class UploadPhotoInfoView(generics.CreateAPIView):
         name = request.data.get("name")
         desc = request.data.get("desc")
         album_id = request.data.get("album_id")
+        partition_id = request.data.get("partition_id")
         is_public = request.data.get("is_public")
         url = request.data.get("url")
-        is_watermark = request.data.get("is_watermark")
-        # 添加水印
-        if is_watermark:
-            img_path = f"{settings.BASE_DIR}{url}"
-            img = Image.open(img_path)
-            if img.mode != "RGBA":
-                img = img.convert("RGBA")
-            txt = Image.new("RGBA", img.size, (0, 0, 0, 0))
-            fnt = ImageFont.truetype(
-                f"{settings.BASE_DIR}/static/font/SmileySans-Oblique.ttf", 40
-            )
-            d = ImageDraw.Draw(txt)
-            d.text(
-                (img.size[0] - 200, img.size[1] - 100),
-                request.user.username,
-                font=fnt,
-                fill=(255, 255, 255, 255),
-            )
-            out = Image.alpha_composite(img, txt)
-            out.save(img_path)
         queryset = Photo.objects.filter(author=user, name=name)
+        # 如果是私密照片，无需审核
         if queryset.exists():
             res.update(code=2, msg="照片已存在")
+        elif not is_public:
+            queryset.create(
+                author=user,
+                name=name,
+                desc=desc,
+                album_id=album_id,
+                partition_id=partition_id,
+                is_public=is_public,
+                url=url,
+                status=0,
+            )
         else:
-            Photo.objects.create(
+            queryset.create(
                 author=user,
                 name=name,
                 desc=desc,
                 album_id=album_id,
                 is_public=is_public,
                 url=url,
+                partition_id=partition_id,
             )
             res.update(data="添加成功")
         return res.data
@@ -230,7 +224,7 @@ class GetPhotoInfoView(generics.GenericAPIView):
         return res.data
 
 
-# 获取某一用户的公开照片
+# 获取某一用户的公开且通过审核照片
 class GetPublicPhotoByUidView(generics.GenericAPIView):
     """
     获取某一用户的公开照片
@@ -244,7 +238,7 @@ class GetPublicPhotoByUidView(generics.GenericAPIView):
     def get(self, request):
         res = JsonResponse()
         user_id = request.query_params.get("id")
-        photos = Photo.objects.filter(author_id=user_id, is_public=True)
+        photos = Photo.objects.filter(author_id=user_id, is_public=True, status=0)
         # 分页
         page = self.paginate_queryset(photos)
         if page is not None:
@@ -272,15 +266,45 @@ class UpdatePhotoInfoView(views.APIView):
         desc = request.data.get("desc")
         album_id = request.data.get("album_id")
         is_public = request.data.get("is_public")
+        partition_id = request.data.get("partition_id")
         queryset = Photo.objects.filter(author=user, id=pk)
+        if album_id == 0:
+            album_id = None
+        if partition_id == 0:
+            partition_id = None
         if queryset.exists():
             queryset.update(
                 name=name,
                 desc=desc,
                 album_id=album_id,
                 is_public=is_public,
+                partition_id=partition_id,
             )
             res.update(data="修改成功")
         else:
             res.update(code=2, msg="照片不存在")
+        return res.data
+
+
+# 根据分区id获取公开，已审核照片
+class GetPhotoByPidView(generics.GenericAPIView):
+    """
+    根据分区id获取公开，已审核照片
+    """
+
+    serializer_class = PhotoSerializer
+
+    # @CacheDecorator("r")
+    def get(self, request):
+        res = JsonResponse()
+        pid = request.query_params.get("partition")
+        photos = Photo.objects.filter(partition_id=pid, is_public=True, status=0)
+        print(photos)
+        # 分页
+        page = self.paginate_queryset(photos)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(photos, many=True)
+        res.update(data=serializer.data)
         return res.data

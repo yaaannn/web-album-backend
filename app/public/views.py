@@ -7,7 +7,7 @@ from django.core.cache import caches
 from PIL import Image
 from rest_framework import views
 from rest_framework.parsers import MultiPartParser
-
+import ipfshttpclient as ipfs
 from extension.auth.jwt_auth import UserJwtAuthentication
 from extension.json_response_ext import JsonResponse
 from extension.permission_ext import IsAuthPermission
@@ -103,4 +103,27 @@ class ValidateSliderCaptcha(views.APIView):
             res.update(data={"result": True})
         else:
             res.update(data={"result": False})
+        return res.data
+
+
+# 上传图片到ipfs
+class UploadPhotoToIPFS(views.APIView):
+    parser_classes = [MultiPartParser]
+
+    def post(self, request):
+        res = JsonResponse()
+        images = request.FILES.items()
+        key, image = next(images)
+        check_image = os.path.splitext(image.name)[1]
+        if check_image[1:].lower() not in ("jpg", "jpeg", "png", "gif"):
+            res.update(code=400, msg="图片格式不正确")
+            return res.data
+        # 连接ipfs节点
+        ipfs_client = ipfs.connect("/ip4/127.0.0.1/tcp/5001")
+        # 上传图片到ipfs
+        image = ipfs_client.add(image)
+        # 获取图片的hash值
+        image_hash = image["Hash"]
+
+        res.update(data={"url": image_hash})
         return res.data

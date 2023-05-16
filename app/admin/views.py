@@ -182,6 +182,30 @@ class DeletePhotoView(generics.GenericAPIView):
         return res.data
 
 
+# 审核照片
+class AuditPhotoView(generics.GenericAPIView):
+    authentication_classes = [AdminJwtAuthentication]
+    permission_classes = [IsAuthPermission]
+
+    @CacheDecorator("w")
+    def get(self, request):
+        res = JsonResponse()
+        pk = request.query_params.get("id")
+        status = request.query_params.get("status")
+        queryset = Photo.objects.filter(id=pk)
+        if queryset.exists():
+            photo = queryset.first()
+            if status == "0":
+                photo.status = 0
+            elif status == "2":
+                photo.status = 2
+            photo.save()
+            res.update(msg="操作成功")
+            return res.data
+        res.update(msg="操作失败", code=2)
+        return res.data
+
+
 # 获取评论列表
 class GetCommentListView(generics.GenericAPIView):
     authentication_classes = [AdminJwtAuthentication]

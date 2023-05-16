@@ -28,7 +28,8 @@ urlpatterns = [
     path("api/v1/photo/", include("app.photo.urls")),
     path("api/v1/archive/", include("app.archive.urls")),
     path("api/v1/admin/", include("app.admin.urls")),
+    path("api/v1/partition/", include("app.partition.urls")),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static("/media/upload/", document_root=settings.UPLOAD_DIR)
+# if settings.DEBUG:
+#     urlpatterns += static("/media/upload/", document_root=settings.UPLOAD_DIR)

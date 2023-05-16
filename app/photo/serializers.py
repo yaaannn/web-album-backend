@@ -1,6 +1,5 @@
 from .models import Photo
 
-# from extension.base.serializer import BaseModelSerializer
 from rest_framework import serializers
 from app.user.serializers import SimpleUserInfoSerializer
 
