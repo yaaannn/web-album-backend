@@ -114,16 +114,42 @@ class UploadPhotoToIPFS(views.APIView):
         res = JsonResponse()
         images = request.FILES.items()
         key, image = next(images)
-        check_image = os.path.splitext(image.name)[1]
-        if check_image[1:].lower() not in ("jpg", "jpeg", "png", "gif"):
-            res.update(code=400, msg="图片格式不正确")
-            return res.data
         # 连接ipfs节点
         ipfs_client = ipfs.connect("/ip4/127.0.0.1/tcp/5001")
         # 上传图片到ipfs
         image = ipfs_client.add(image)
         # 获取图片的hash值
         image_hash = image["Hash"]
-
+        print(image_hash)
         res.update(data={"url": image_hash})
+        return res.data
+
+
+# 列出敏感词，敏感词位置static/keywords
+class ListSensitiveWords(views.APIView):
+    def get(self, request):
+        res = JsonResponse()
+        # 获取敏感词文件路径
+        keywords_path = settings.BASE_DIR / "static/keywords"
+        # 读取敏感词文件
+        with open(keywords_path, "r") as f:
+            keywords = f.readlines()
+        # 去除换行符
+        keywords = [keyword.strip() for keyword in keywords]
+        res.update(data={"keywords": keywords})
+        return res.data
+
+
+# 新增敏感词，敏感词位置static/keywords
+class AddSensitiveWord(views.APIView):
+    def post(self, request):
+        res = JsonResponse()
+        # 获取敏感词文件路径
+        keywords_path = settings.BASE_DIR / "static/keywords"
+        # 获取敏感词
+        keyword = request.data.get("keyword")
+        # 读取敏感词文件
+        with open(keywords_path, "a") as f:
+            f.write("\n" + keyword)
+        res.update(data={"result": True})
         return res.data

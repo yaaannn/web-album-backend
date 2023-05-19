@@ -37,7 +37,6 @@ class CacheDecorator:
                 # locked = mutex.acquire(timeout=20)
                 # 如果加锁成功，就先查缓存
                 cache_val = self._redis.get(payload)
-
                 # 如果缓存未命中，获取响应并且添加缓存
                 if not cache_val:
                     logging.debug("缓存未命中")
