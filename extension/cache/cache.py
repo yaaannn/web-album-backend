@@ -1,12 +1,10 @@
 import logging
 import pickle
 from functools import wraps
-from typing import Callable, Any
+from typing import Any, Callable
 
 import redis
 from django.conf import settings
-
-from django.core.cache import caches
 from rest_framework.response import Response
 
 

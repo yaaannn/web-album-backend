@@ -13,9 +13,9 @@ from .views import (
 )
 
 urlpatterns = [
-    path("login", AdminLoginView.as_view()),
-    path("info", GetAdminInfoView.as_view()),
-    path("user/list", GetUserListView.as_view()),
+    path("login", AdminLoginView.as_view(), name="admin_login"),
+    path("info", GetAdminInfoView.as_view(), name="admin_info"),
+    path("user/list", GetUserListView.as_view(), name="user_list"),
     path("user/delete", DeleteUserView.as_view()),
     path("photo/list", GetPhotoListView.as_view()),
     path("photo/delete", DeletePhotoView.as_view()),
