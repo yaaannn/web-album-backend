@@ -1,7 +1,8 @@
 from django.db import models
-from extension.base.model import BaseModel
-from app.user.models import User
+
 from app.photo.models import Photo
+from app.user.models import User
+from extension.base.model import BaseModel
 
 
 # 点赞表

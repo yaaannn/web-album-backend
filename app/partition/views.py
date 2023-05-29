@@ -1,9 +1,9 @@
-from app.partition.models import Partition
-from .serializers import PartitionSerializer
-
 from rest_framework import views
+
+from app.partition.models import Partition
+from app.partition.serializers import PartitionSerializer
 from extension.auth.jwt_auth import AdminJwtAuthentication
-from extension.permission_ext import IsAuthPermission
+from extension.auth.login_auth import IsAuthPermission
 from extension.json_response_ext import JsonResponse
 
 

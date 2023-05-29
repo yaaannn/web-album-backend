@@ -1,9 +1,8 @@
-from app.album.models import Album
-
-from .models import Admin
 from rest_framework import serializers
-from app.user.models import User
+
+from app.album.models import Album
 from app.photo.models import Photo
+from app.user.models import User
 
 
 class AdminLoginSerializer(serializers.Serializer):

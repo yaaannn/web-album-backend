@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Album
-from app.user.serializers import SimpleUserInfoSerializer
+
+from app.album.models import Album
 
 
 class AlbumSerializer(serializers.ModelSerializer):

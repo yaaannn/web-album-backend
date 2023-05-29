@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import (
-    ListPartitionView,
+from app.partition.views import (
     CreatePartitionView,
     DeletePartitionView,
+    ListPartitionView,
     UpdatePartitionView,
 )
 

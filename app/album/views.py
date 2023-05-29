@@ -1,12 +1,11 @@
 from rest_framework import generics
 
+from app.album.models import Album
+from app.album.serializers import AlbumSerializer
 from extension.auth.jwt_auth import UserJwtAuthentication
+from extension.auth.login_auth import IsAuthPermission
 from extension.cache.cache import CacheDecorator
 from extension.json_response_ext import JsonResponse
-from extension.permission_ext import IsAuthPermission
-
-from .models import Album
-from .serializers import AlbumSerializer
 
 
 class AlbumCreateView(generics.GenericAPIView):

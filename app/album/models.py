@@ -1,6 +1,7 @@
 from django.db import models
-from extension.base.model import BaseModel
+
 from app.user.models import User
+from extension.base.model import BaseModel
 
 
 # Create your models here.

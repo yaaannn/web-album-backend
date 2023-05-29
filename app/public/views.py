@@ -2,15 +2,16 @@ import os
 from datetime import datetime
 from uuid import uuid4
 
+import ipfshttpclient as ipfs
 from django.conf import settings
 from django.core.cache import caches
 from PIL import Image
 from rest_framework import views
 from rest_framework.parsers import MultiPartParser
-import ipfshttpclient as ipfs
+
 from extension.auth.jwt_auth import UserJwtAuthentication
+from extension.auth.login_auth import IsAuthPermission
 from extension.json_response_ext import JsonResponse
-from extension.permission_ext import IsAuthPermission
 from util.slider_captcha_util import SliderCaptchaUtil
 
 # Create your views here.
@@ -77,7 +78,6 @@ class GetSliderCaptcha(views.APIView):
         # 获取滑块验证码
         captcha = SliderCaptchaUtil()
         slider_img, bg_img, x, y = captcha.create()
-        print(x, y)
         # 将滑块验证码的x坐标存入缓存
         cache = caches["default"]
         cache.set(f"slider_captcha", x, timeout=None)
@@ -120,7 +120,6 @@ class UploadPhotoToIPFS(views.APIView):
         image = ipfs_client.add(image)
         # 获取图片的hash值
         image_hash = image["Hash"]
-        print(image_hash)
         res.update(data={"url": image_hash})
         return res.data
 

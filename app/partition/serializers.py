@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Partition
+from app.partition.models import Partition
 
 
 class PartitionSerializer(serializers.ModelSerializer):

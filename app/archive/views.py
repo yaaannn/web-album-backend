@@ -1,13 +1,11 @@
 from rest_framework import generics
-from .models import Like
 
+from app.archive.models import Like
+from app.archive.serializers import *
 from extension.auth.jwt_auth import UserJwtAuthentication
-from extension.json_response_ext import JsonResponse
-from extension.permission_ext import IsAuthPermission
+from extension.auth.login_auth import IsAuthPermission
 from extension.cache.cache import CacheDecorator
-
-
-from .serializers import *
+from extension.json_response_ext import JsonResponse
 
 
 # 对图片进行点赞

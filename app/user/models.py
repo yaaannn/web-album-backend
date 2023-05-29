@@ -1,9 +1,7 @@
 from django.db import models
 
-# from extension.base_model_ext import BaseModel
 from extension.base.model import BaseModel
 from util.password_util import PasswordUtil
-from django.conf import settings
 
 
 class User(BaseModel):

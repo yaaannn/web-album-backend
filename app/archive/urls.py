@@ -1,11 +1,11 @@
 from django.urls import path
 
-from .views import (
-    LikePhotoView,
-    IsLikePhotoView,
-    LikeListView,
-    LikeCountView,
+from app.archive.views import (
     CancelLikePhotoView,
+    IsLikePhotoView,
+    LikeCountView,
+    LikeListView,
+    LikePhotoView,
 )
 
 urlpatterns = [

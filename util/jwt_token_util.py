@@ -23,10 +23,6 @@ class JwtTokenUtil:
             "verify_exp": settings.JWT_SETTINGS["VERIFY_EXP"],
             "require": settings.JWT_SETTINGS["REQUIRE"],
         }
-        # 对于自建的，这个没什么意义
-        # self.audience = settings.JWT_SETTINGS['AUDIENCE']
-        # self.issuer = settings.JWT_SETTINGS['ISSUER']
-        # self.leeway = settings.JWT_SETTINGS['LEEWAY']
 
     def encode(self, payload: dict) -> str:
         """将目标信息转为jwt的值"""
@@ -44,18 +40,18 @@ class JwtTokenUtil:
             )
             return res, ""
         except ExpiredSignatureError as e:
-            return None, "Token expired."
+            return None, "Token 过期."
         except InvalidSignatureError as e:
-            return None, "Token is not valid."
+            return None, "Token 验证失败."
         except DecodeError as e:
-            return None, "Not enough segments."
+            return None, "Token 解析失败."
 
     def encode_user(self, payload: dict) -> str:
         """将输入的payload，主要是要加密的数据，转为jwt的token字符串"""
         if not isinstance(payload, dict):
-            raise ValueError("Payload must be a dict type.")
+            raise ValueError("Payload 必须是一个字典.")
         if "id" not in payload or "jwt_version" not in payload:
-            raise KeyError("Payload must contain the 'id' and 'jwt_version' fields.")
+            raise KeyError("Payload 必须包含 id 和 jwt_version 两个键.")
         return self.encode(payload)
 
     def decode_user(self, s: str, User: Model) -> tuple:
@@ -70,11 +66,11 @@ class JwtTokenUtil:
                 .first()
             )
             if not user:
-                return None, "The account does not exist."
+                return None, "用户不存在."
             if user.get("jwt_version") != obj["jwt_version"]:
-                return None, "The token has been refreshed."
+                return None, "Token 已失效."
             if user.get("is_freeze"):
-                return None, "The account was frozen."
+                return None, "用户已被冻结."
             return User.objects.filter(id=obj["id"]).first(), ""
         except Exception as e:
             logging.error(f"将jwt解析为用户时发生异常: {e}")

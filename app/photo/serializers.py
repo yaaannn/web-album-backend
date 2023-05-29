@@ -1,6 +1,6 @@
-from .models import Photo
-
 from rest_framework import serializers
+
+from app.photo.models import Photo
 from app.user.serializers import SimpleUserInfoSerializer
 
 

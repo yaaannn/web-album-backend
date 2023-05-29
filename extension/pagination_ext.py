@@ -14,9 +14,6 @@ class Pagination(PageNumberPagination):
     max_page_size = 100
 
     def get_my_next(self):
-        # logging.info("{}-{}".format(8888, self.request.path))
-        # logging.info("{}-{}".format(8888, settings.SERVER_NAME))
-        # logging.info("{}-{}".format(8888, self.get_next_link().split(self.request.path)))
         return (
             settings.SERVER_NAME
             + self.request.path

@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import (
+from app.comment.views import (
     CommentCreateView,
-    CommentListView,
     CommentDeleteView,
+    CommentListView,
     CommentReplyCreateView,
     CommentReplyDeleteView,
 )

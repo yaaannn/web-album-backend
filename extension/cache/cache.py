@@ -13,7 +13,7 @@ class CacheDecorator:
         self._cache_type = cache_type
         self._redis = redis.Redis(
             connection_pool=redis.ConnectionPool().from_url(
-                settings.CACHES["redis_cli"]["LOCATION"]
+                settings.CACHES["api"]["LOCATION"]
             )
         )
         self._cache_timeout = cache_timeout
@@ -26,7 +26,6 @@ class CacheDecorator:
                 if self._cache_type == "w":
                     res = func(re_self, request, *args, **kwds)
                     # 清除所有缓存
-                    # caches["redis_cli"].clear()
                     self._redis.flushdb(1)
                     return res
                 # 获取请求路径和参数

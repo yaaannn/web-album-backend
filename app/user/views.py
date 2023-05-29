@@ -9,8 +9,7 @@ from app.user.serializers import *
 from extension.json_response_ext import JsonResponse
 from extension.auth.jwt_auth import UserJwtAuthentication
 
-# from extension.jwt_token_ext import JwtToken
-from extension.permission_ext import IsAuthPermission
+from extension.auth.login_auth import IsAuthPermission
 from util.password_util import PasswordUtil
 from util.verification_code_util import create_random_code
 from util.jwt_token_util import JwtTokenUtil

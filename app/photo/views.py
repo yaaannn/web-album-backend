@@ -1,17 +1,12 @@
-import os
-from django.conf import settings
 from django.db.models import F
 from rest_framework import generics, views
 
 from app.photo.models import Photo
+from app.photo.serializers import PhotoSerializer
 from extension.auth.jwt_auth import UserJwtAuthentication
+from extension.auth.login_auth import IsAuthPermission
 from extension.cache.cache import CacheDecorator
 from extension.json_response_ext import JsonResponse
-from extension.permission_ext import IsAuthPermission
-
-from app.photo.serializers import PhotoSerializer
-from PIL import Image, ImageFilter, ImageFont, ImageDraw
-import click
 
 
 # 获取用户所有图片
@@ -59,9 +54,6 @@ class DeletePhotoView(views.APIView):
         pk = request.query_params.get("id")
         queryset = Photo.objects.filter(author=user, id=pk)
         if queryset.exists():
-            # 删除本地图片
-            # print(queryset.first().url[1:])
-            os.remove(queryset.first().url[1:])
             queryset.delete()
             res.update(data="删除成功")
 
@@ -299,7 +291,6 @@ class GetPhotoByPidView(generics.GenericAPIView):
         res = JsonResponse()
         pid = request.query_params.get("partition")
         photos = Photo.objects.filter(partition_id=pid, is_public=True, status=0)
-        print(photos)
         # 分页
         page = self.paginate_queryset(photos)
         if page is not None:

@@ -1,15 +1,13 @@
 from rest_framework import generics
 
+from app.comment.models import Comment, Reply
+from app.comment.serializers import CommentSerializer
 from app.photo.models import Photo
-from app.user.models import User
 from extension.auth.jwt_auth import UserJwtAuthentication
+from extension.auth.login_auth import IsAuthPermission
 from extension.cache.cache import CacheDecorator
 from extension.json_response_ext import JsonResponse
-from extension.permission_ext import IsAuthPermission
 from util.sensitive_filter_util import DFAFilter
-
-from .models import Comment, Reply
-from .serializers import CommentReplySerializer, CommentSerializer
 
 
 class CommentCreateView(generics.GenericAPIView):

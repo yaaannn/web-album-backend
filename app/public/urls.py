@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import (
-    UploadPhotoToLocal,
-    GetSliderCaptcha,
-    ValidateSliderCaptcha,
-    UploadPhotoToIPFS,
-    ListSensitiveWords,
+
+from app.public.views import (
     AddSensitiveWord,
+    GetSliderCaptcha,
+    ListSensitiveWords,
+    UploadPhotoToIPFS,
+    UploadPhotoToLocal,
+    ValidateSliderCaptcha,
 )
 
 urlpatterns = [

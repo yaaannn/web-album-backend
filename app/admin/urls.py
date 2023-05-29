@@ -1,15 +1,15 @@
 from django.urls import path
 
-from .views import (
+from app.admin.views import (
     AdminLoginView,
-    GetAdminInfoView,
-    GetUserListView,
-    DeleteUserView,
-    GetPhotoListView,
-    DeletePhotoView,
-    FreezeUserView,
-    GetCommentListView,
     AuditPhotoView,
+    DeletePhotoView,
+    DeleteUserView,
+    FreezeUserView,
+    GetAdminInfoView,
+    GetCommentListView,
+    GetPhotoListView,
+    GetUserListView,
 )
 
 urlpatterns = [

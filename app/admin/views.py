@@ -1,28 +1,18 @@
-from django.shortcuts import render
 import logging
 
-from django.core.cache import caches
-from django.core.mail import send_mail
 from rest_framework import generics
 
 from app.admin.models import Admin
-
+from app.admin.serializers import AdminLoginSerializer, PhotoSerializer, UserSerializer
+from app.comment.models import Comment
+from app.comment.serializers import CommentSerializer
 from app.photo.models import Photo
 from app.user.serializers import *
-from extension.json_response_ext import JsonResponse
 from extension.auth.jwt_auth import AdminJwtAuthentication
-
-# from extension.jwt_token_ext import JwtToken
+from extension.auth.login_auth import IsAuthPermission
 from extension.cache.cache import CacheDecorator
-from extension.permission_ext import IsAuthPermission
-from util.password_util import PasswordUtil
-from util.verification_code_util import create_random_code
+from extension.json_response_ext import JsonResponse
 from util.jwt_token_util import JwtTokenUtil
-
-from .serializers import AdminLoginSerializer
-from .serializers import UserSerializer, PhotoSerializer, AlbumSerializer
-from app.comment.serializers import CommentSerializer
-from app.comment.models import Comment
 
 
 # 管理员登录
@@ -73,7 +63,6 @@ class GetAdminInfoView(generics.GenericAPIView):
     def get(self, request):
         res = JsonResponse()
         user = request.user
-        print(user)
         res.update(
             data={
                 "admin_info": {

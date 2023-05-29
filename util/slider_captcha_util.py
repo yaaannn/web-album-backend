@@ -17,7 +17,6 @@ class SliderCaptchaUtil:
         with open(self.bgList, "rb") as f:
             image_bytes = f.read()
         img = Image.open(BytesIO(image_bytes))
-        print(img.size)
         self.bgWidth, self.bgHeight = img.size
 
         # 生成拼图位置坐标
