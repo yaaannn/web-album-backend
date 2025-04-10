@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 # from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
@@ -31,5 +32,5 @@ urlpatterns = [
     path("api/v1/partition/", include("app.partition.urls")),
 ]
 
-# if settings.DEBUG:
-#     urlpatterns += static("/media/upload/", document_root=settings.UPLOAD_DIR)
+if settings.DEBUG:
+    urlpatterns += static("/media/upload/", document_root=settings.UPLOAD_DIR)

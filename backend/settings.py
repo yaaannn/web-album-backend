@@ -11,13 +11,18 @@ SHOWSQL = True
 
 # 数据库配置
 DATABASES = {
+    # "default": {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "NAME": "album",
+    #     "USER": "root",
+    #     "PASSWORD": "heyan5201314",
+    #     "HOST": "127.0.0.1",
+    #     "PORT": "3306",
+    # }
+    # 默认sqlite数据库
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "album",
-        "USER": "root",
-        "PASSWORD": "heyan5201314",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
