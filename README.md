@@ -2,6 +2,8 @@
 
 详细内容查看`网络相册说明书.pdf`
 
+前端项目地址 [网络相册前端](https://github.com/yaaannn/web-album-frontend)
+
 > 前置条件
 
 运行前，请确保已经成功安装了 Python、Redis 等环境
